@@ -189,14 +189,14 @@ def main():
     target_client = LLMClient(
         model_name='llama3.1:8b',
         provider='ollama',
-        base_url='http://10.50.2.40:11434/v1',
+        base_url='http://127.0.0.1:11434/v1',
         temperature=0.7
     )
 
     attacker_client = LLMClient(
         model_name='llama3.1:8b',
         provider='ollama',
-        base_url='http://10.50.2.40:11434/v1',
+        base_url='http://127.0.0.1:11434/v1',
         temperature=0.7
     )
 
