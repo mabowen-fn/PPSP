@@ -1,0 +1,38 @@
+experiment:
+  name: "ppsp_vs_ra"
+  seed: 42
+  output_dir: "./results"
+
+models:
+  target_models:
+    - name: "llama3.1:8b"
+      provider: "ollama"
+      base_url: "http://10.50.2.40:11434/v1"
+      api_key_env: "NONE"
+
+  attacker_model:
+    name: "llama3.1:8b"
+    provider: "ollama"
+    base_url: "http://10.50.2.40:11434/v1"
+    temperature: 0.7
+
+ppsp:
+  num_turns: 3
+  initial_a: 0.3
+  alpha_divergence: 0.0  # KL divergence
+  bayesian_opt:
+    n_initial: 10
+    n_iterations: 90
+    acquisition: "EI"  # Expected Improvement
+
+harmbench:
+  dataset_path: "./data/harmbench"
+  num_behaviors: 50  # Start with subset for pilot
+  categories: ["all"]
+
+evaluation:
+  judge_api: "http://10.50.2.39:18082/score_full"
+  metrics: ["ASR", "DRI", "SRI"]
+
+baseline:
+  ra_variants: ["DRI", "SRI"]
