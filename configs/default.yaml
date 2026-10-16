@@ -20,9 +20,10 @@ ppsp:
   num_turns: 3
   initial_a: 0.3
   alpha_divergence: 0.0  # KL divergence
+  use_optimization: true  # Enable Bayesian optimization for schedule learning
   bayesian_opt:
     n_initial: 10
-    n_iterations: 90
+    n_iterations: 20  # Reduced from 90 for faster evaluation
     acquisition: "EI"  # Expected Improvement
 
 harmbench:
