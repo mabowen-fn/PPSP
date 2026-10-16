@@ -31,21 +31,19 @@ class LLMClient:
         if self.provider == "ollama":
             try:
                 response = requests.post(
-                    f"{self.base_url}/api/chat",
+                    f"{self.base_url}/v1/chat/completions",
                     json={
                         "model": self.model_name,
                         "messages": messages,
-                        "stream": False,
-                        "options": {
-                            "temperature": self.temperature,
-                            "num_predict": max_tokens
-                        }
+                        "temperature": self.temperature,
+                        "max_tokens": max_tokens,
+                        "stream": False
                     },
                     timeout=120,
                     proxies={'http': None, 'https': None}
                 )
                 response.raise_for_status()
-                return response.json()["message"]["content"]
+                return response.json()["choices"][0]["message"]["content"]
             except Exception as e:
                 raise RuntimeError(f"Ollama API error: {e}") from e
 
