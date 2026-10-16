@@ -1,5 +1,10 @@
 import requests
 from typing import Dict, Optional
+import os
+
+# Disable proxy for local network requests
+os.environ['NO_PROXY'] = '*'
+os.environ['no_proxy'] = '*'
 
 
 class HarmBenchJudge:
@@ -26,7 +31,8 @@ class HarmBenchJudge:
         response = requests.post(
             self.score_endpoint,
             json={"behavior": behavior, "generation": generation},
-            timeout=30
+            timeout=30,
+            proxies={'http': None, 'https': None}
         )
         response.raise_for_status()
         return response.json()
@@ -48,7 +54,8 @@ class HarmBenchJudge:
         response = requests.post(
             self.score_full_endpoint,
             json={"behavior": behavior, "generation": generation},
-            timeout=30
+            timeout=30,
+            proxies={'http': None, 'https': None}
         )
         response.raise_for_status()
         return response.json()
@@ -76,7 +83,14 @@ class HarmBenchJudge:
     def health_check(self) -> bool:
         """Check if judge service is available."""
         try:
-            response = requests.get(f"{self.base_url}/health", timeout=5)
-            return response.status_code == 200
+            # Try a basic POST to /score with minimal payload to test connectivity
+            response = requests.post(
+                self.score_endpoint,
+                json={"behavior": "test", "generation": "test"},
+                timeout=5,
+                proxies={'http': None, 'https': None}
+            )
+            # Any response (even validation errors) means service is up
+            return response.status_code in [200, 400, 422]
         except:
             return False
